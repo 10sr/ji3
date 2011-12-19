@@ -3,20 +3,23 @@ module testalu;
    reg [3:0] op;
    reg [31:0] tr;
    reg [31:0] sr;
-   // reg        clk;
-   reg [31:0] dr;
-   reg        cf;
-   
-   alu a(op, tr, sr, dr, cf);
+   reg        clk;
 
-   // initial begin
-   //    clk <= 0;
-   //    forever #5 clk = ~clk;
-   // end
+   wire [31:0] dr;
+   wire        cf;
+   wire        of;
+   
+   
+   alu a(op, tr, sr, clk, dr, cf, of);
+
+   initial begin
+      clk <= 0;
+      forever #5 clk = ~clk;
+   end
    
    
    initial begin
-      #10 op <= 4'b0000; tr <= 32; sr <= 21;
+      #8 op <= 4'b0000; tr <= 32; sr <= 21;
       #10 op <= 4'b0001;
       #10 op <= 4'b0010;
       #10 op <= 4'b0011;
