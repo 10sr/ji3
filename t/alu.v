@@ -1,3 +1,15 @@
+`define ADD 4'b0000
+`define SUB 4'b0001
+`define CMP 4'b0010
+`define AND 4'b0011
+`define OR 4'b0100
+`define XOR 4'b0101
+`define NEG 4'b0110
+`define NOT 4'b0111
+`define SLL 4'b1000
+`define SRL 4'b1001
+`define SRA 4'b1010
+
 module alu(op, tr, sr, clk, dr, cf, of);
    input [3:0] op;
    input [31:0] tr;
@@ -30,10 +42,9 @@ module alu(op, tr, sr, clk, dr, cf, of);
         4'b0101: dr <= tr ^ sr;      // xor
         4'b0110: dr <= ! tr + 1;     // neg
         4'b0111: dr <= ! tr;         // not
-        4'b1000: {cf, dr} <= {1'b0, tr} << (sr & 31'o0037);  // sll
-        4'b1001: {cf, dr} <= {1'b0, tr} << (sr & 31'o0037);  // sla
-        4'b1010: {dr, cf} <= {tr, 1'b0} >> (sr & 31'o0037);  // srl
-        4'b1011: {dr, cf} <= {tr, 1'b0} >>> (sr & 31'o0037); // sra
+        4'b1000: {cf, dr} <= {1'b0, tr} << (sr & 31'o0037);  // sll, sla
+        4'b1001: {dr, cf} <= {tr, 1'b0} >> (sr & 31'o0037);  // srl
+        4'b1010: {dr, cf} <= {tr, 1'b0} >>> (sr & 31'o0037); // sra
       endcase // case (op)
    end // always @ (posedge clk)
 endmodule // alu

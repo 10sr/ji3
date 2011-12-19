@@ -30,6 +30,5 @@ module testalu;
       #10 op <= 4'b1000; sr <= 3;
       #10 op <= 4'b1001;
       #10 op <= 4'b1010;
-      #10 op <= 4'b1011;
    end // initial begin
 endmodule // testalu

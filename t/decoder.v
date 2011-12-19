@@ -16,19 +16,13 @@
 `define SRL 4'b1001
 `define SRA 4'b1010
 
-module decoder(ir, clk);
+module decoder(ir, clk, op, use_im);
    inut [31:0] ir;
    input clk;
 
-   reg [3:0] op;
+   output [3:0] op;
    reg [31:0] tr;
    reg [31:0] sr;
-
-   wire [31:0] dr;
-   wire        cf;
-   wire        of;
-   
-   alu a(op, tr, sr, clk, dr, cf, of);
    
    always @(posedge clk) begin
       case(ir[31:24] )
@@ -52,7 +46,7 @@ module decoder(ir, clk);
         
         8'b1000_0011:          // immediate
         
-        8'b1111_0111:          // zNEG or ZNOT
+        8'b1111_0111:          // zNEG or zNOT
         
         8'b1100_0001:          // shift
         
@@ -60,7 +54,5 @@ module decoder(ir, clk);
         8'b1111_0100:          // zHLT
    end
 
-   function 
-   
 endmodule // decoder
 
