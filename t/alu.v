@@ -10,6 +10,8 @@
 `define SRL 4'b1001
 `define SRA 4'b1010
 
+// CMP does not work at all.
+
 module alu(op, tr, sr, clk, dr, cf, of);
    input [3:0] op;
    input [31:0] tr;
