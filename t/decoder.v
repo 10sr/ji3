@@ -24,7 +24,7 @@
 `define B 2'b10
 `define BCC 2'b01
 
-module decoder(ir, clk, op, im, use_im, br);
+module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
    input [31:0] ir;
    input        clk;
 
@@ -32,11 +32,15 @@ module decoder(ir, clk, op, im, use_im, br);
    output [31:0] im;
    output        use_im;        // use im instead of sr
    output [1:0]  br;
+   output [2:0] ra1, ra2;
 
    reg [3:0]     op;
    reg [31:0]    im;
    reg           use_im;
    reg [1:0]     br;
+
+   assign ra1 = [21:19] ir;
+   assign ra2 = [18:16] ir;
 
    always @(posedge clk) begin
       case(ir[31:24])
