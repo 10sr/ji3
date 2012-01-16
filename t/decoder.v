@@ -24,21 +24,30 @@
 `define B 2'b10
 `define BCC 2'b01
 
-module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
+module decoder(ir, phase, clk, op, im, use_im, br, ra1, ra2, load_en, wren_mem, wren_reg, cr_taken);
    input [31:0] ir;
    input        clk;
+   input [`w:0] phase;
 
    output [3:0] op;
    output [31:0] im;
-   output        use_im;        // use im instead of sr
+   output        use_im;        // use im instead of sr for alu
    output [1:0]  br;
    output [2:0] ra1, ra2;
+   output load_en;
+   output wren_mem;
+   output wren_reg;
+   output cr_taken;
 
    reg [3:0]     op;
    reg [31:0]    im;
    reg           use_im;
    reg [1:0]     br;
-
+   reg load_en;
+   reg wren_mem;
+   reg wren_reg;
+   reg cr_taken;
+   
    assign ra1 = [21:19] ir;
    assign ra2 = [18:16] ir;
 
@@ -50,6 +59,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 1;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b1000_1001:          // zST
           begin
@@ -57,6 +71,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             if (phase[`x]) wren_mem <= 1;
+             else wren_mem <= 0;
+             wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0110_0110:          // zLIL
           begin
@@ -64,6 +83,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= ir[15:8];
              use_im <= 1;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b1000_1001:          // zMOV rg2 <- rg1, dr <- sr
           begin
@@ -71,6 +95,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0000_0001:          // zADD
           begin
@@ -78,6 +107,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0010_1001:          // zSUB
           begin
@@ -85,6 +119,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0011_1001:          // zCMP
           begin
@@ -92,6 +131,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0010_0001:          // zAND
           begin
@@ -99,6 +143,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0000_1001:          // zOR
           begin
@@ -106,6 +155,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b0011_0001:          // zXOR
           begin
@@ -113,12 +167,22 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
           end
         8'b1000_0011:          // immediate
           begin
              im <= ir[15:8];
              use_im <= 1;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
              case (ir[23:19])
                8'b11_000: op <= `ADD;
                8'b11_101: op <= `SUB;
@@ -133,6 +197,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= 0;
              use_im <= 0;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
              case (ir[23:19])
                8'b11_011: op <= `NEG;
                8'b11_010: op <= `NOT;
@@ -143,6 +212,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              im <= ir[15:8];
              use_im <= 1;
              br <= 2'b00;
+             load_en <= 0;
+             wren_mem <= 0;
+             if (phase[`m]) wren_reg <= 1;
+             else wren_reg <= 0;
+             cr_taken <= 0;
              case (ir[23:19])
                8'b11_100: op <= `SLL;
                8'b11_101: op <= `SRL;
@@ -154,6 +228,11 @@ module decoder(ir, clk, op, im, use_im, br, ra1, ra2);
              op <= `ADD;
              im <= ir[15:8] + 3;
              use_im <= 1;
+             load_en <= 0;
+             wren_mem <= 0;
+             wren_reg <= 0;
+             if (phase[`m]) cr_taken <= 1;
+             else cr_taken <= 0;
              case (ir[23:20])
                4'b1110: br <= `B;
                4'b0111: br <= `BCC;
