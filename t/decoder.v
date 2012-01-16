@@ -50,8 +50,8 @@ module decoder(ir, phase, clk, op, im, use_im, br, ra1, ra2, load_en, wren_mem, 
 
    wire [3:0]    ra1, ra2;
    
-   assign ra1 = [21:19] ir;
-   assign ra2 = [18:16] ir;
+   assign ra1 = ir[21:19];
+   assign ra2 = ir[18:16];
 
    always @(posedge clk) begin
       case(ir[31:24])
