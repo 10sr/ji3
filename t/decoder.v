@@ -33,20 +33,22 @@ module decoder(ir, phase, clk, op, im, use_im, br, ra1, ra2, load_en, wren_mem, 
    output [31:0] im;
    output        use_im;        // use im instead of sr for alu
    output [1:0]  br;
-   output [2:0] ra1, ra2;
-   output load_en;
-   output wren_mem;
-   output wren_reg;
-   output cr_taken;
+   output [2:0]  ra1, ra2;
+   output        load_en;
+   output        wren_mem;
+   output        wren_reg;
+   output        cr_taken;
 
    reg [3:0]     op;
    reg [31:0]    im;
    reg           use_im;
    reg [1:0]     br;
-   reg load_en;
-   reg wren_mem;
-   reg wren_reg;
-   reg cr_taken;
+   reg           load_en;
+   reg           wren_mem;
+   reg           wren_reg;
+   reg           cr_taken;
+
+   wire [3:0]    ra1, ra2;
    
    assign ra1 = [21:19] ir;
    assign ra2 = [18:16] ir;
