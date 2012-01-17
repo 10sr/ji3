@@ -9,6 +9,11 @@
 `define SLL 4'b1000
 `define SRL 4'b1001
 `define SRA 4'b1010
+`define MOV 4'b1011
+`define LD 4'b1100
+`define ST 4'b1101
+`define LIL 4'b1110
+`define HLT 4'b1111
 
 // CMP does not work at all.
 
@@ -44,6 +49,7 @@ module alu(op, tr, sr, clk, dr, cf, of);
         4'b0101: dr <= tr ^ sr;      // xor
         4'b0110: dr <= ! tr + 1;     // neg
         4'b0111: dr <= ! tr;         // not
+        `LIL: dr <= sr;
         4'b1000: {cf, dr} <= {1'b0, tr} << (sr & 31'o0037);  // sll, sla
         4'b1001: {dr, cf} <= {tr, 1'b0} >> (sr & 31'o0037);  // srl
         4'b1010: {dr, cf} <= {tr, 1'b0} >>> (sr & 31'o0037); // sra
