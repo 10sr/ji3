@@ -48,7 +48,7 @@ module decoder(ir, phase, clk, op, im, use_im, br, ra1, ra2, load_en, wren_mem, 
    reg           wren_reg;
    reg           cr_taken;
 
-   wire [3:0]    ra1, ra2;
+   wire [2:0]    ra1, ra2;
    
    assign ra1 = ir[21:19];
    assign ra2 = ir[18:16];

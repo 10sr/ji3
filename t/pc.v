@@ -13,15 +13,15 @@ module pc(phase, ct_taken, dr, pc, clk, n_rst);
    input                clk;    	// クロック と リセット
    input                n_rst;
    
-   output [31:0]       pc;
+   output [7:0]       pc;
    
-   reg [31:0]          pc;
+   reg [7:0]          pc;
    always @(posedge clk or negedge n_rst) begin
 	  if (n_rst == 0)
 	  pc <= 0;
 	  else if (phase[`f] == 1)
-		pc <= pc + 4;
+		pc <= pc + 1;
 	  else if (phase[`w] == 1  &&  ct_taken == 1)
-		pc <= dr;
+		pc <= dr[7:0];
    end // always
 endmodule

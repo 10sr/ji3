@@ -14,6 +14,6 @@ module accessmem(pc, address, data, wren, clk, ir, q);
    output [31:0] ir;
    output [31:0] q;
 
-   mem m(pc, address, clk, 0, data, 0, wren, ir, q);
+   mem m(pc, address, clk, 32'b0, data, 1'b0, wren, ir, q);
 
 endmodule // accessmem

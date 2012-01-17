@@ -24,7 +24,7 @@ module proc(clk, n_rst, seg_out, seg_sel);
    output [7:0]  seg_sel;
 
    wire [`w:0]   phase;           // phase signal
-   wire [31:0]   pc;              // program counter
+   wire [7:0]    pc;              // program counter
    wire          ct_taken;               // if write dr to pc
 
    wire [7:0]    ad_mem;          // memory: address to write or read memory from
@@ -41,6 +41,8 @@ module proc(clk, n_rst, seg_out, seg_sel);
 
    wire [3:0]    op;               // operand used by alu
    wire [31:0]   tr, sr;          // alu input
+   wire [31:0]   im;                // imediate
+   wire [1:0]    br;                // branch command
    wire [31:0]   dr;              // result of alu
    wire          cf, of;
 
@@ -48,7 +50,7 @@ module proc(clk, n_rst, seg_out, seg_sel);
 
    reg           r;             // ring conter reset
 
-   ring_ctr # (`w) rc(r, phase, clk, n_rst);
+   ring_ctr rc(r, phase, clk, n_rst);
    pc p(phase, ct_taken, dr, pc, clk, n_rst);
    accessmem am(pc, ad_mem, data_mem, wren_mem, clk, ir, q_mem); // pc is add1 for mem, ad_mem is add2.
    decoder d(ir, phase, clk, op, im, use_im, br, reg_add1, reg_add2, len_mem, wren_mem, reg_write_en, cr_taken);
@@ -64,7 +66,7 @@ module proc(clk, n_rst, seg_out, seg_sel);
    always @(posedge clk or negedge n_rst) begin
       if(n_rst == 0)
         begin
-           r = 0;
+           r <= 0;
         end
       else if (phase[`f]);
       else if (phase[`r]);
